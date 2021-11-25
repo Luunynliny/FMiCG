@@ -28,7 +28,13 @@ function setup() {
 
 function draw() {
     // Compute offset to keep mandelbrot proportion
-    let offset = map(windowWidth - windowHeight, 0, windowHeight, -1.5, 1.5);
+    let offset = map(
+        windowWidth - windowHeight - NAV_HEIGHT,
+        0,
+        windowHeight,
+        -1.5,
+        1.5
+    );
 
     // Mandelbrot
     const A = [
