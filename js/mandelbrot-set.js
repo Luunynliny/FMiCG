@@ -27,18 +27,9 @@ function setup() {
 }
 
 function draw() {
-    // Compute offset to keep mandelbrot proportion
-    let offset = map(
-        windowWidth - windowHeight - NAV_HEIGHT,
-        0,
-        windowHeight,
-        -1.5,
-        1.5
-    );
-
     // Mandelbrot
     const A = [
-        [-2 - offset, 1 + offset],
+        [-2, 1],
         [-1.5,1.5]
     ];
     const colormap = loadColormap(filedata)

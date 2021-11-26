@@ -16,19 +16,10 @@ function setup() {
 }
 
 function draw() {
-    // Compute offsets to keep julia proportion
-    let offset = map(
-        windowWidth - windowHeight - NAV_HEIGHT,
-        0,
-        windowHeight,
-        -1.5,
-        1.5
-    );
-
     // Julia
     const c = new Complex(0.35, 0),
         A = [
-            [-1.5 - offset, 1.5 + offset],
+            [-1.5, 1.5],
             [-1.5, 1.5]
         ],
         K = 20,
