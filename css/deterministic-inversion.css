@@ -1,0 +1,11 @@
+/* ########## */
+/* # Slider # */
+/* ########## */
+
+.slider {
+    width: 200px;
+}
+
+.slider:hover {
+    cursor: pointer;
+}
