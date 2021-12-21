@@ -33,7 +33,7 @@ function draw() {
             [-2.5, 2.5],
             [-2.5, 2.5]
         ],
-        K = 15,
+        K = 10,
         T = 0.000001;
 
     schroder(A, K, T, ROOTS, COLORS);
@@ -57,12 +57,13 @@ function schroder(A, K, T, ROOTS, COLORS) {
     for (let x = 0; x < width; x++) {
         for (let y = 0; y < height; y++) {
             // Get point coordinates
-            let z0 = new Complex(
+            const z = new Complex(
                 map(x, 0, width, A[0][0], A[0][1]),
                 map(y, 0, height, A[1][0], A[1][1])
             );
 
             let ic = color(0);
+            let z0 = z;
 
             for (let i = 0; i < K; i++) {
                 // Next sequence term
@@ -70,19 +71,24 @@ function schroder(A, K, T, ROOTS, COLORS) {
                 const a = f(z0).mult(fd(z0));
                 const b = fd(z0).pow(2).sub(f(z0).mult(fdd(z0)));
 
-                z0 = z0.sub(a.div(b));
+                const z1 = z0.sub(a.div(b));
 
                 // Compute on roots
                 for (let j = 0; j < ROOTS.length; j++) {
-                    const diff = z0.sub(ROOTS[j]);
+                    const root = ROOTS[j]
 
                     // Check if close enough to root
+                    const diff = z0.sub(root);
                     if (abs(diff.re) < T && abs(diff.im) < T) {
                         // Set pixel color
                         ic = COLORS[j];
                     }
                 }
+
+                z0 = z1;
             }
+
+            // print(alpha);
 
             // Color pixel
             const index = (x + y * width) * 4;
@@ -145,6 +151,14 @@ class Complex {
     }
 
     abs() {
-        return sqrt(this.re ** 2 + this.im ** 2)
+        return sqrt(this.re ** 2 + this.im ** 2);
+    }
+
+    dot(c) {
+        return this.re * c.re + this.im * c.im;
+    }
+
+    dist(c) {
+        return sqrt((this.re - c.re) ** 2 + (this.im - c.im) ** 2);
     }
 }
