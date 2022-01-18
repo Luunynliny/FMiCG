@@ -6,6 +6,7 @@
         "js/deterministic-inversion.js",
         "js/mandelbrot-set.js",
         "js/julia-set.js",
-        "js/schroder-method.js"
+        "js/schroder-method.js",
+        "js/quaternionic-julia.js"
     ]
 }

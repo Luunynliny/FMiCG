@@ -1,0 +1,10 @@
+#equation {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    width: 100%;
+
+    font-size: 15px;
+    color: white;
+    font-family: 'Encode Sans', sans-serif;
+}
