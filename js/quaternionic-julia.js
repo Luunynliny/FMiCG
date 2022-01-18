@@ -6,9 +6,9 @@ const MAX_ITERATION = 10;
 const ACCURACY = 0.001;
 
 // Lighting
-const AMBIENT_RGB = [80, 100, 220];
-const DIFFUSE_RGB = [200, 50, 50];
-const SPECULAR_RGB = [20, 20, 100];
+const AMBIENT_RGB = [40, 50, 110];
+const DIFFUSE_RGB = [100, 25, 25];
+const SPECULAR_RGB = [10, 10, 50];
 
 /* ###################### */
 /* ### User Interface ### */
@@ -21,8 +21,7 @@ const NAV_HEIGHT = 40;
 /* ################## */
 
 function setup() {
-    // createCanvas(windowWidth / 2, (windowHeight - NAV_HEIGHT) / 2);
-    createCanvas(500, 500);
+    createCanvas(windowWidth, windowHeight - NAV_HEIGHT);
     background(0);
     pixelDensity(1);
     noLoop();
@@ -30,18 +29,23 @@ function setup() {
 
 function draw() {
     // Camera
-    const eye = createVector(1, 0, 1);
+    const eye = createVector(0, 0, 2.5);
     const center = createVector(0, 0, 0);
-    const up = createVector(eye.x, eye.y, 0);
-    const fovY = radians(90);
+    const up = createVector(0, 1, 0);
+    const fovY = radians(70);
 
     // Light
-    const light = createVector(-1, 0, -0.5);
+    const light = createVector(1, 0, 0);
 
-    // Julia parameters
-    const c = new Quaternion(-0.5, 0.4, 0.4, 0.2);
+    // Julia sets
+    const JULIAS = [
+        new Quaternion(-0.591, -0.399, 0.399, 0.437),
+        new Quaternion(-0.5, 0.4, 0.4, 0.2),
+        new Quaternion(-1, 0.2, 0, 0),
+        new Quaternion(0, 1, 0.1, 0.2)
+    ];
 
-    quaternionicJulia(eye, center, up, fovY, c, light);
+    quaternionicJulia(eye, center, up, fovY, JULIAS[1], light);
 }
 
 /* ########################## */
@@ -58,16 +62,15 @@ function quaternionicJulia(
     for (let x = 0; x < width; x++) {
         for (let y = 0; y < height; y++) {
             // Julia computations
-            let rayO, rayDir;
-            [rayO, rayDir] = rayThroughPixel(
+            let rayDir = rayThroughPixel(
                 cameraEye, cameraCenter, cameraUp, cameraFovY,
                 x, y
             );
 
-            const [p, d] = intersect(rayO, rayDir, c);
+            const [p, d] = intersect(cameraEye, rayDir, c);
 
             // Coloring
-            let ic = color(125);
+            let ic = color('black');
             if (d < ACCURACY) {
                 const n = estimateNormal(p, c);
                 ic = phongShading(p, n, cameraEye, light);
@@ -95,12 +98,12 @@ function rayThroughPixel(
 ) {
     // Camera system
     const wt = p5.Vector.sub(cameraEye, cameraCenter);
-    const camW = wt.div(wt.mag());
+    const camW = p5.Vector.div(wt, wt.mag());
 
-    const ut = cameraUp.cross(camW);
-    const camU = ut.div(ut.mag());
+    const ut = p5.Vector.cross(cameraUp, camW);
+    const camU = p5.Vector.div(ut, ut.mag());
 
-    const camV = camW.cross(camU);
+    const camV = p5.Vector.cross(camW, camU);
 
     // Pixel center
     const xc = x + 0.5;
@@ -108,37 +111,44 @@ function rayThroughPixel(
 
     // Alpha-beta coordinates
     const fovX = (width / height) * tan(cameraFovY / 2);
-    const alpha = (xc - width / 2) / (width / 2) * tan(fovX / 2);
-    const beta = (height / 2 - yc) / (height / 2) * tan(cameraFovY / 2);
+    const alpha = (xc - (width / 2)) / (width / 2) * tan(fovX / 2);
+    const beta = ((height / 2) - yc) / (height / 2) * tan(cameraFovY / 2);
 
     // Ray direction
-    const a = camU.mult(alpha).add(camV.mult(beta)).sub(camW);
-    const dir = a.div(a.mag());
+    const a1 = p5.Vector.mult(camU, alpha);
+    const a2 = p5.Vector.mult(camV, beta);
+    const a3 = p5.Vector.add(a1, a2);
+    const a = p5.Vector.sub(a3, camW);
 
-    return [cameraEye, dir];
+    const dir = p5.Vector.div(a, a.mag());
+
+    return dir;
 }
 
-function intersect(eye, direction, c) {
+function intersect(r0, direction, c) {
     let d = Infinity;
-    let p = eye.copy();
+    let p = r0.copy();
 
     while (true) {
         let z = new Quaternion(p.x, p.y, p.z, 0);
         let zp = new Quaternion(1, 0, 0, 0);
 
         for (let i = 0; i < MAX_ITERATION; i++) {
-            zp = z.mult(zp);
+            zp = z.mult(zp).scal(2);
             z = z.mult(z).add(c);
 
-            if (z.abs() ** 2 > 10) {
+            if (z.mag() ** 2 > 10) {
                 break;
             }
         }
 
-        d = (z.abs() / (2 * zp.abs())) * log(z.abs());
-        p.add(p5.Vector.mult(direction, max(d, ACCURACY)));
+        d = (z.mag() / (2 * zp.mag())) * log(z.mag());
+        p = p5.Vector.add(
+            p,
+            p5.Vector.mult(direction, max(d, ACCURACY))
+        );
 
-        if (d < ACCURACY || p.magSq() > 3) {
+        if (d < ACCURACY || p.mag() > 3) {
             break;
         }
     }
@@ -172,9 +182,9 @@ function estimateNormal(p, c) {
     }
 
     const g = createVector(
-        Math.log2(qa.abs() ** 2) - Math.log2(qb.abs() ** 2),
-        Math.log2(qc.abs() ** 2) - Math.log2(qd.abs() ** 2),
-        Math.log2(qe.abs() ** 2) - Math.log2(qf.abs() ** 2)
+        Math.log2(qa.mag() ** 2) - Math.log2(qb.mag() ** 2),
+        Math.log2(qc.mag() ** 2) - Math.log2(qd.mag() ** 2),
+        Math.log2(qe.mag() ** 2) - Math.log2(qf.mag() ** 2)
     );
 
     return g.normalize();
@@ -268,7 +278,18 @@ class Quaternion {
         );
     }
 
-    abs() {
+    mag() {
         return sqrt(this.w ** 2 + this.x ** 2 + this.y ** 2 + this.z ** 2);
+    }
+
+    normalize() {
+        const m = this.mag();
+
+        return new Quaternion(
+            this.w / m,
+            this.x / m,
+            this.y / m,
+            this.z / m
+        );
     }
 }
