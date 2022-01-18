@@ -37,15 +37,19 @@ function draw() {
     // Light
     const light = createVector(1, 0, 0);
 
-    // Julia sets
-    const JULIAS = [
-        new Quaternion(-0.591, -0.399, 0.399, 0.437),
-        new Quaternion(-0.5, 0.4, 0.4, 0.2),
-        new Quaternion(-1, 0.2, 0, 0),
-        new Quaternion(0, 1, 0.1, 0.2)
-    ];
+    // Julia quaternionic
+    const julia = Quaternion.random();
+    console.log(julia)
 
-    quaternionicJulia(eye, center, up, fovY, JULIAS[1], light);
+    // Julia set
+    quaternionicJulia(
+        eye, center, up, fovY,
+        julia,
+        light
+    );
+
+    // Display julia equation
+    document.getElementById('equation').textContent = julia.string();
 }
 
 /* ########################## */
@@ -282,14 +286,17 @@ class Quaternion {
         return sqrt(this.w ** 2 + this.x ** 2 + this.y ** 2 + this.z ** 2);
     }
 
-    normalize() {
-        const m = this.mag();
+    string() {
+        return this.w + ' + ' + this.x + ' i + ' + this.y + ' j + ' + this.z + ' k';
+    }
 
+    static random() {
+        // Random values [-1, 1]
         return new Quaternion(
-            this.w / m,
-            this.x / m,
-            this.y / m,
-            this.z / m
+            Math.random(),
+            Math.random(),
+            Math.random(),
+            Math.random(),
         );
     }
 }
