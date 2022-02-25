@@ -77,7 +77,7 @@ function noorNoor(A, K, T, ROOTS, COLORS) {
 
                 // Compute on roots
                 for (let j = 0; j < ROOTS.length; j++) {
-                    const root = ROOTS[j]
+                    const root = ROOTS[j];
 
                     // Check if close enough to root
                     const diff = z0.sub(root);

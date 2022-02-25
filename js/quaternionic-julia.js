@@ -130,7 +130,7 @@ function rayThroughPixel(
 }
 
 function intersect(r0, direction, c) {
-    let d = Infinity;
+    let d;
     let p = r0.copy();
 
     while (true) {
