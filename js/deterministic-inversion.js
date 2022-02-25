@@ -105,8 +105,8 @@ function initialization() {
 /* ########################### */
 
 function fractal(startingCircles, inversionCircles, n) {
-    F = startingCircles;
-    T1 = [];
+    let F = startingCircles;
+    let T1 = [];
 
     // Number of inversion cricle use to obtain T1 item
     let q = [];
@@ -124,16 +124,16 @@ function fractal(startingCircles, inversionCircles, n) {
     F = F.concat(T1);
 
     for (let l = 0; l < n; l++) {
-        T2 = [];
+        const T2 = [];
 
         for (let i = 0; i < inversionCircles.length; i++) {
             for (let j = 0; j < T1.length; j++) {
                 // Current circle to transform
-                let S = T1[j];
+                const S = T1[j];
 
                 if (!inversionCircles[i].isOrthogonal(S) && i != q[j]) {
-                    let C = inversionTransformation(S, inversionCircles[i]);
-                    T2.push(C)
+                    const C = inversionTransformation(S, inversionCircles[i]);
+                    T2.push(C);
                 }
             }
         }
