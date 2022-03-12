@@ -52,11 +52,13 @@ This repository gathers all my laboratory assignments into an interactive websit
     <img src="img/circles.png" alt="Circles Inversion" width="30%">
     <img src="img/mandelbrot.png" alt="Circles Inversion" width="30%">
     <img src="img/julia.png" alt="Circles Inversion" width="30%">
+</div>
+
+<div align="center">
     <img src="img/schroder.png" alt="Circles Inversion" width="30%">
     <img src="img/noor.png" alt="Circles Inversion" width="30%">
     <img src="img/quaternion.png" alt="Circles Inversion" width="30%">
 </div>
-
 
 <p align="right"><a href="#top"><i>back to top</i></a></p>
 
