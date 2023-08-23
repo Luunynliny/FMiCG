@@ -12,7 +12,7 @@
 <br />
 
 <div align="center">
-    <a href="https://github.com/Eccsx/FMiCG">
+    <a href="https://github.com/Luunynliny/FMiCG">
         <img src="img/univ.png" alt="Logo" height="80">
     </a>
     <h3 align="center">Fractal Methods in Computer Graphics</h3>
