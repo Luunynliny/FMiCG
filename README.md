@@ -19,7 +19,7 @@
     <p align="center">
         Class projects
         <br />
-        <a href="https://eccsx.github.io/FMiCG/">View</a>
+        <a href="https://luunynliny.github.io/FMiCG/">View</a>
     </p>
 </div>
 
